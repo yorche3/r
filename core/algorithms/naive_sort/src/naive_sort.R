@@ -10,3 +10,71 @@
 #
 # Implementación pendiente: la escribe el autor. Esta delegación solo genera el
 # esqueleto y las pruebas unitarias.
+selection_sort <- function(arr) {
+  if (is.null(arr)) {
+    return(NULL)
+  }
+  n <- length(arr)
+  if (n < 2) {
+    return(arr)
+  }
+  for (i in 1:n) {
+    min_idx <- i
+    for (j in (i + 1):n) {
+      if (arr[j] < arr[min_idx]) {
+        min_idx <- j
+      }
+    }
+    if (min_idx != i) {
+      tmp <- arr[i]
+      arr[i] <- arr[min_idx]
+      arr[min_idx] <- tmp
+    }
+  }
+  return(arr)
+}
+
+bubble_sort <- function(arr) {
+  if (is.null(arr)) {
+    return(NULL)
+  }
+  n <- length(arr)
+  if (n < 2) {
+    return(arr)
+  }
+  for (i in 1:n) {
+    swapped <- FALSE
+    for (j in 1:(n - i)) {
+      if (arr[j] > arr[j + 1]) {
+        tmp <- arr[j]
+        arr[j] <- arr[j + 1]
+        arr[j + 1] <- tmp
+        swapped <- TRUE
+      }
+    }
+    if (!swapped) {
+      break
+    }
+  }
+  return(arr)
+}
+
+insertion_sort <- function(arr) {
+  if (is.null(arr)) {
+    return(NULL)
+  }
+  n <- length(arr)
+  if (n < 2) {
+    return(arr)
+  }
+  for (i in 2:n) {
+    key <- arr[i]
+    j <- i - 1
+    while (j >= 1 && arr[j] > key) {
+      arr[j + 1] <- arr[j]
+      j <- j - 1
+    }
+    arr[j + 1] <- key
+  }
+  return(arr)
+}
