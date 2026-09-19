@@ -18,7 +18,7 @@ selection_sort <- function(arr) {
   if (n < 2) {
     return(arr)
   }
-  for (i in 1:n) {
+  for (i in seq_len(n - 1)) {
     min_idx <- i
     for (j in (i + 1):n) {
       if (arr[j] < arr[min_idx]) {
@@ -42,9 +42,9 @@ bubble_sort <- function(arr) {
   if (n < 2) {
     return(arr)
   }
-  for (i in 1:n) {
+  for (i in seq_len(n - 1)) {
     swapped <- FALSE
-    for (j in 1:(n - i)) {
+    for (j in seq_len(n - i)) {
       if (arr[j] > arr[j + 1]) {
         tmp <- arr[j]
         arr[j] <- arr[j + 1]
