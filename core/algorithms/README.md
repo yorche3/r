@@ -10,7 +10,8 @@ Los módulos de esta fase trabajan sobre **vectores atómicos** (el «array» de
 
 | Módulo | Especificación | Enfoque | Tests | Estado |
 |--------|---------------|---------|:-----:|:------:|
-| [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `Rscript test/run_tests.R` + testthat | 3 | ✅ |
+| [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `make test` + testthat | 3 | ✅ |
+| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `make test` + testthat | 5 | ✅ |
 
 ---
 
@@ -18,12 +19,31 @@ Los módulos de esta fase trabajan sobre **vectores atómicos** (el «array» de
 
 ```text
 algorithms/
-└── naive_sort/                      # 05_Naive_Sort
-    ├── src/
-    │   └── naive_sort.R             # 3 funciones del contrato
-    ├── test/
-    │   ├── naive_sort_tests.R       # 3 tests × 8 casos
-    │   └── run_tests.R              # Punto de entrada
+├── naive_sort/                      # 05_Naive_Sort
+│   ├── DESCRIPTION                  # Manifiesto del paquete (naiveSort)
+│   ├── NAMESPACE                    # Las 3 funciones exportadas
+│   ├── Makefile                     # Punto de entrada: make test
+│   ├── R/
+│   │   └── naive_sort.R             # 3 funciones del contrato
+│   ├── tests/
+│   │   ├── testthat.R               # test_check() para R CMD check
+│   │   └── testthat/
+│   │       └── test-naive-sort.R    # 3 tests × 8 casos
+│   ├── .gitignore                   # Ignora artefactos de R
+│   └── README.md
+└── data_structures_basics/          # 06_Data_Structures_Basics
+    ├── DESCRIPTION                  # Manifiesto del paquete (dataStructuresBasics)
+    ├── NAMESPACE                    # Clases S4 y 22 funciones exportadas
+    ├── Makefile                     # Punto de entrada: make test
+    ├── R/
+    │   └── data_structures_basics.R # Clases S4, helpers y operaciones del contrato
+    ├── tests/
+    │   └── testthat/
+    │       ├── helper-contract.R    # Helper expect_contract
+    │       ├── test-node.R          # 2 tests para Node
+    │       ├── test-linked-list.R   # 1 test para LinkedList
+    │       ├── test-stack.R         # 1 test para Stack
+    │       └── test-queue.R         # 1 test para Queue
     ├── .gitignore                   # Ignora artefactos de R
     └── README.md
 ```
@@ -35,12 +55,12 @@ algorithms/
 | Característica | Descripción |
 |---------------|-------------|
 | **Runtime** | R 4.x (`Rscript`), intérprete sin paso de compilación a un artefacto |
-| **CLI** | `Rscript test/run_tests.R` desde la raíz del módulo |
-| **Andamiaje** | ✍️ Estructura manual (`mkdir -p src test`), la que ya usa [`foundations/numbers/`](../foundations/numbers/); no hay manifiesto de dependencias |
-| **Framework de tests** | testthat (`library(testthat)`, `test_that`, `expect_equal`) |
-| **Runner** | `test/run_tests.R` con `test_file(...)`: testthat no descubre archivos `*_tests.R` con su patrón por defecto (`test*`), así que R sí necesita el punto de entrada |
-| **Separación** | `src/` (módulo) ↔ `test/` (suites y punto de entrada) |
-| **Carga del módulo** | `source("../src/{modulo}.R")` al inicio de la suite; R no tiene importaciones para scripts sueltos |
+| **CLI** | `make test` desde la raíz del módulo |
+| **Andamiaje** | ✍️ Estructura manual (`mkdir -p R tests/testthat`), la que ya usa [`foundations/numbers/`](../foundations/numbers/); el manifiesto es el `DESCRIPTION` del paquete |
+| **Framework de tests** | testthat (`test_that`, `expect_equal`) |
+| **Runner** | `Makefile` (`make test`) sobre `testthat::test_local()`: descubre `tests/testthat/test*.R` y carga el paquete sin instalarlo |
+| **Separación** | `R/` (código del contrato) ↔ `tests/testthat/` (suites) |
+| **Carga del módulo** | `pkgload::load_all()` a través de `test_local()`; el módulo es un paquete de R (`DESCRIPTION` + `NAMESPACE`), no un script cargado con `source()` |
 | **Iteración** | Bucles `for` con `seq_len()` y `while`; R no garantiza recursión de cola (TCO) |
 | **Indexación** | 1-based (`arr[i]`), con las cotas calculadas por el algoritmo |
 | **API** | Una función por algoritmo, con `arr` como nombre del parámetro (el de la documentación) |
@@ -58,7 +78,11 @@ algorithms/
 ```bash
 # Naive Sort Tests
 cd naive_sort
-Rscript test/run_tests.R
+make test
+
+# Data Structures Basics Tests
+cd ../data_structures_basics
+make test
 ```
 
 ---

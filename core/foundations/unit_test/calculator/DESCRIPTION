@@ -1,0 +1,13 @@
+Package: calculator
+Type: Package
+Title: Unit Test Calculator
+Version: 0.1.0
+Authors@R: person("Yorche", email = "hyaoki123@gmail.com", role = c("aut", "cre"))
+Description: Specification 03_Unit_Test_Calculator: the five calculator
+    operations built from the previous ones (multiplication as repeated
+    addition, division as repeated subtraction) and covered with testthat.
+License: MIT
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3

@@ -1,0 +1,9 @@
+# R artefacts
+.Rhistory
+.RData
+.Rproj.user
+.Renviron
+
+# R package build artefacts
+*.tar.gz
+*.Rcheck/

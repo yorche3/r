@@ -1,0 +1,22 @@
+# NAMESPACE escrito a mano: en esta fase no se usa roxygen2.
+# Se exportan los 15 algoritmos del contrato. Los cuatro helpers `_help` de la
+# recursión con acumulador quedan internos: son el puente didáctico de ese
+# enfoque, no parte de la superficie del módulo. Las pruebas los alcanzan igual,
+# porque `testthat::test_local()` carga el paquete con `export_all = TRUE`.
+export(sum_of_first_n_rec)
+export(factorial_rec)
+export(fibonacci_rec)
+export(greatest_common_divisor_rec)
+export(least_common_multiple_rec)
+
+export(sum_of_first_n_acc)
+export(factorial_acc)
+export(fibonacci_acc)
+export(greatest_common_divisor_acc)
+export(least_common_multiple_acc)
+
+export(sum_of_first_n_ite)
+export(factorial_ite)
+export(fibonacci_ite)
+export(greatest_common_divisor_ite)
+export(least_common_multiple_ite)

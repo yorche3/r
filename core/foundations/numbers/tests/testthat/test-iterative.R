@@ -1,7 +1,3 @@
-library(testthat)
-
-source("../src/numbers.R")
-
 test_that("sum_of_first_n_ite", {
   expect_equal(sum_of_first_n_ite(0), 0)
   expect_equal(sum_of_first_n_ite(3), 6)

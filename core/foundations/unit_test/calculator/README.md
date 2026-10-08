@@ -10,49 +10,58 @@ Operaciones aritméticas básicas (`addition`, `subtraction`, `multiplication`, 
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`src/calculator.R`](src/calculator.R) | Código fuente: las 5 funciones del módulo `calculator`. |
-| [`test/calculator_test.R`](test/calculator_test.R) | Suite de pruebas: 5 `test_that` con `expect_equal`. |
+| [`DESCRIPTION`](DESCRIPTION) | Manifiesto del paquete `calculator`: versión, licencia y dependencia de testthat. |
+| [`NAMESPACE`](NAMESPACE) | Exporta las 5 funciones del módulo. |
+| [`R/calculator.R`](R/calculator.R) | Código fuente: las 5 funciones del módulo `calculator`. |
+| [`Makefile`](Makefile) | Punto de entrada: `make test`. |
+| [`tests/testthat/test-calculator.R`](tests/testthat/test-calculator.R) | Suite de pruebas: 5 `test_that` con `expect_equal`. |
+| [`tests/testthat.R`](tests/testthat.R) | `test_check("calculator")`, la comprobación que usa `R CMD check`. |
 | [`.gitignore`](.gitignore) | Ignora `.Rhistory`, `.RData` y otros artefactos de R. |
 
 **Estructura de directorios esperada:**
 
 ```text
 calculator/
-├── src/
-│   └── calculator.R        # Código fuente
-├── test/
-│   └── calculator_test.R   # Suite de pruebas
+├── DESCRIPTION                 # Manifiesto del paquete (calculator)
+├── NAMESPACE                   # Las 5 funciones exportadas
+├── Makefile                    # Punto de entrada: make test
+├── R/
+│   └── calculator.R            # Código fuente
+├── tests/
+│   ├── testthat.R              # test_check() para R CMD check
+│   └── testthat/
+│       └── test-calculator.R   # Suite de pruebas
 ├── .gitignore
-└── README.md               # Este archivo
+└── README.md                   # Este archivo
 ```
 
 ---
 
 ## 🛠️ Enfoque y construcción / Approach & Build
 
-**ES:** El proyecto se creó manualmente, sin herramientas de scaffolding. R no tiene sistema de importación para scripts sueltos: el módulo `calculator` es un archivo `calculator.R` con funciones que la suite carga con `source()`. Las pruebas usan **testthat**, la biblioteca de tests más robusta y extendida de R (verifica con `expect_equal` y reporta `FAIL/WARN/SKIP/PASS` por test).
+**ES:** El proyecto se creó manualmente, sin herramientas de scaffolding. El módulo `calculator` es un paquete de R (`DESCRIPTION`, `NAMESPACE` y `R/`) cuyas funciones la suite alcanza sin `source()`: `make test` llama a `testthat::test_local()`, que carga el paquete con `pkgload::load_all()` sin instalarlo. Las pruebas usan **testthat**, la biblioteca de tests más robusta y extendida de R (verifica con `expect_equal` y reporta `FAIL/WARN/SKIP/PASS` por test).
 
-**EN:** The project was created manually, without scaffolding tools. R has no import system for loose scripts: the `calculator` module is a `calculator.R` file with functions that the suite loads with `source()`. Tests use **testthat**, R's most robust and widespread test library (verifies with `expect_equal` and reports `FAIL/WARN/SKIP/PASS` per test).
+**EN:** The project was created manually, without scaffolding tools. The `calculator` module is an R package (`DESCRIPTION`, `NAMESPACE` and `R/`) whose functions the suite reaches without `source()`: `make test` calls `testthat::test_local()`, which loads the package with `pkgload::load_all()` without installing it. Tests use **testthat**, R's most robust and widespread test library (verifies with `expect_equal` and reports `FAIL/WARN/SKIP/PASS` per test).
 
 ### Inicialización / Initialization
 
 1. Crear la estructura de directorios:
 
    ```bash
-   mkdir -p r/core/foundations/unit_test/calculator/{src,test}
+   mkdir -p r/core/foundations/unit_test/calculator/{R,tests/testthat}
    ```
 
-2. Escribir `src/calculator.R` y `test/calculator_test.R`.
+2. Escribir `DESCRIPTION`, `NAMESPACE`, `R/calculator.R` y `tests/testthat/test-calculator.R`.
 
-3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
+3. No se necesita ningún paso adicional de construcción o vinculación de dependencias: `test_local()` carga el paquete desde el propio directorio.
 
 ---
 
 ## 📄 Archivos de configuración clave / Key Configuration Files
 
-No se requieren archivos de configuración de build. El módulo se carga en la suite con `source()`.
+No hay paso de compilación. La configuración vive en `DESCRIPTION` (nombre `calculator`, dependencia `testthat`) y en `NAMESPACE`, que declara las 5 funciones exportadas; la suite no necesita `source()` porque `test_local()` carga el paquete.
 
-### `src/calculator.R` — Implementaciones educativas
+### `R/calculator.R` — Implementaciones educativas
 
 **ES:** Cada operación compleja se construye a partir de las simples (concepto que se explora a fondo en `04_Numbers`): `multiplication` suma repetidamente, `division` resta repetidamente y `modulus` reutiliza `division` y `multiplication`. Por eso **no** se usan los operadores `*`, `/` ni `%%`.
 
@@ -99,17 +108,13 @@ modulus <- function(a, b) {
 | `division(a, b)` | Resta repetitiva: `while (a >= b)` resta `b` y cuenta |
 | `modulus(a, b)` | `q <- division(a, b)`; `p <- multiplication(q, b)`; `subtraction(a, p)` |
 
-### `test/calculator_test.R` — Suite testthat
+### `tests/testthat/test-calculator.R` — Suite testthat
 
-**ES:** La suite agrupa un `test_that` por función (5 tests, uno por operación), cada uno con su `expect_equal`. El `source("../src/calculator.R")` carga el módulo para que las funciones estén disponibles.
+**ES:** La suite agrupa un `test_that` por función (5 tests, uno por operación), cada uno con su `expect_equal`. No hace falta cargar nada: el archivo se llama `test-calculator.R`, así que testthat lo descubre y `test_local()` deja las funciones del paquete disponibles.
 
-**EN:** The suite groups one `test_that` per function (5 tests, one per operation), each with its `expect_equal`. `source("../src/calculator.R")` loads the module so the functions are available.
+**EN:** The suite groups one `test_that` per function (5 tests, one per operation), each with its `expect_equal`. Nothing needs to be loaded: the file is named `test-calculator.R`, so testthat discovers it and `test_local()` makes the package functions available.
 
 ```r
-library(testthat)
-
-source("../src/calculator.R")
-
 test_that("addition", {
   expect_equal(addition(2, 3), 5)
 })
@@ -134,8 +139,8 @@ test_that("modulus", {
 > **ES:** testthat ya incluye su propio runner, así que no se crea el `run_tests` del pseudocódigo (la especificación lo pide solo si el framework no lo incluye).
 > **EN:** testthat already includes its own runner, so the pseudocode's `run_tests` is not created (the specification asks for it only if the framework doesn't include one).
 
-> **ES:** No se usa `testthat::test_dir("test")` porque su patrón por defecto solo descubre archivos con prefijo `test*`; la suite se llama `calculator_test.R` según la especificación, por lo que se ejecuta con `test_file`.
-> **EN:** `testthat::test_dir("test")` is not used because its default pattern only discovers files with a `test*` prefix; the suite is called `calculator_test.R` per the specification, so it is run with `test_file`.
+> **ES:** El layout de paquete elimina el motivo por el que antes se usaba `test_file`: el descubrimiento por defecto de testthat (`tests/testthat/test*.R`) se satisface con el nombre `test-calculator.R`, así que basta el `Makefile`.
+> **EN:** The package layout removes the reason `test_file` was used before: testthat's default discovery (`tests/testthat/test*.R`) is satisfied by the `test-calculator.R` name, so the `Makefile` is enough.
 
 ---
 
@@ -161,14 +166,18 @@ Desde la raíz del proyecto:
 
 ```bash
 cd r/core/foundations/unit_test/calculator
-Rscript -e 'testthat::test_file("test/calculator_test.R")'
+make test
 ```
 
 ### Salida esperada / Expected output
 
 ```text
-══ Testing calculator_test.R ═══════════════════════════════════════════════════
-[ FAIL 0 | WARN 0 | SKIP 0 | PASS 5 ] Done!
+Rscript -e "testthat::test_local()"
+✔ | F W  S  OK | Context
+✔ |          5 | calculator
+
+══ Results ═════════════════════════════════════════════════════════════════════
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 5 ]
 ```
 
 > **ES:** `PASS 5` confirma que las 5 operaciones se verificaron correctamente (equivale al `Tests run: 5, Passed: 5, Failed: 0` de la especificación).
@@ -178,8 +187,8 @@ Rscript -e 'testthat::test_file("test/calculator_test.R")'
 
 ## 📝 Notas de implementación / Implementation Notes
 
-- **ES:** R no tiene importación de módulos para scripts sueltos; `source()` es el mecanismo idiomático para cargar el código fuente en la suite.
-- **EN:** R has no module imports for loose scripts; `source()` is the idiomatic mechanism to load source code into the suite.
+- **ES:** El layout de paquete (`DESCRIPTION` + `NAMESPACE` + `R/`) es la forma idiomática de que la suite alcance el código sin `source()`.
+- **EN:** The package layout (`DESCRIPTION` + `NAMESPACE` + `R/`) is the idiomatic way for the suite to reach the code without `source()`.
 - **ES:** La división por cero no se maneja en este ejemplo educativo (según el pseudocódigo de la especificación); las pruebas usan valores válidos.
 - **EN:** Division by zero is not handled in this educational example (per the specification's pseudocode); tests use valid values.
 - **ES:** Solo se usa la biblioteca estándar en el código fuente; `testthat` es la única dependencia externa y únicamente para pruebas.

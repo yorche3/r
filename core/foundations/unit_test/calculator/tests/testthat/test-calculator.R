@@ -1,7 +1,3 @@
-library(testthat)
-
-source("../src/calculator.R")
-
 test_that("addition", {
   expect_equal(addition(2, 3), 5)
 })
