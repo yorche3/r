@@ -11,6 +11,7 @@ Los módulos de esta fase trabajan sobre **vectores atómicos** (el «array» de
 | Módulo | Especificación | Enfoque | Tests | Estado |
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `make test` + testthat | 3 | ✅ |
+| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `make test` + testthat | 5 | ✅ |
 
 ---
 
@@ -18,16 +19,31 @@ Los módulos de esta fase trabajan sobre **vectores atómicos** (el «array» de
 
 ```text
 algorithms/
-└── naive_sort/                      # 05_Naive_Sort
-    ├── DESCRIPTION                  # Manifiesto del paquete (naiveSort)
-    ├── NAMESPACE                    # Las 3 funciones exportadas
+├── naive_sort/                      # 05_Naive_Sort
+│   ├── DESCRIPTION                  # Manifiesto del paquete (naiveSort)
+│   ├── NAMESPACE                    # Las 3 funciones exportadas
+│   ├── Makefile                     # Punto de entrada: make test
+│   ├── R/
+│   │   └── naive_sort.R             # 3 funciones del contrato
+│   ├── tests/
+│   │   ├── testthat.R               # test_check() para R CMD check
+│   │   └── testthat/
+│   │       └── test-naive-sort.R    # 3 tests × 8 casos
+│   ├── .gitignore                   # Ignora artefactos de R
+│   └── README.md
+└── data_structures_basics/          # 06_Data_Structures_Basics
+    ├── DESCRIPTION                  # Manifiesto del paquete (dataStructuresBasics)
+    ├── NAMESPACE                    # Clases S4 y 22 funciones exportadas
     ├── Makefile                     # Punto de entrada: make test
     ├── R/
-    │   └── naive_sort.R             # 3 funciones del contrato
+    │   └── data_structures_basics.R # Clases S4, helpers y operaciones del contrato
     ├── tests/
-    │   ├── testthat.R               # test_check() para R CMD check
     │   └── testthat/
-    │       └── test-naive-sort.R    # 3 tests × 8 casos
+    │       ├── helper-contract.R    # Helper expect_contract
+    │       ├── test-node.R          # 2 tests para Node
+    │       ├── test-linked-list.R   # 1 test para LinkedList
+    │       ├── test-stack.R         # 1 test para Stack
+    │       └── test-queue.R         # 1 test para Queue
     ├── .gitignore                   # Ignora artefactos de R
     └── README.md
 ```
@@ -62,6 +78,10 @@ algorithms/
 ```bash
 # Naive Sort Tests
 cd naive_sort
+make test
+
+# Data Structures Basics Tests
+cd ../data_structures_basics
 make test
 ```
 
