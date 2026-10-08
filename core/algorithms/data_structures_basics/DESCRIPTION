@@ -1,0 +1,14 @@
+Package: dataStructuresBasics
+Type: Package
+Title: Data Structures Basics over a Shared Linked Node
+Version: 0.1.0
+Authors@R: person("Yorche", email = "hyaoki123@gmail.com", role = c("aut", "cre"))
+Description: Specification 06_Data_Structures_Basics: one shared Node type and
+    manual linked list, stack and queue built on it, each with its own pointers
+    and operations, without wrapping each other or base R collections.
+License: MIT
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Imports: methods
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3

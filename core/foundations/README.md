@@ -27,19 +27,28 @@ r/
         │   └── README.md
         ├── unit_test/
         │   └── calculator/        # 03_Unit_Test_Calculator — Pruebas unitarias
-        │       ├── src/
+        │       ├── DESCRIPTION
+        │       ├── NAMESPACE
+        │       ├── Makefile
+        │       ├── R/
         │       │   └── calculator.R
-        │       ├── test/
-        │       │   └── calculator_test.R
+        │       ├── tests/
+        │       │   ├── testthat.R
+        │       │   └── testthat/
+        │       │       └── test-calculator.R
         │       ├── .gitignore
         │       └── README.md
         └── numbers/               # 04_Numbers — Algoritmos numéricos
-            ├── src/
+            ├── DESCRIPTION
+            ├── NAMESPACE
+            ├── Makefile
+            ├── R/
             │   └── numbers.R
-            ├── test/
-            │   ├── recursive_tests.R
-            │   ├── iterative_tests.R
-            │   └── run_tests.R
+            ├── tests/
+            │   ├── testthat.R
+            │   └── testthat/
+            │       ├── test-recursive.R
+            │       └── test-iterative.R
             ├── .gitignore
             └── README.md
 ```
@@ -52,7 +61,7 @@ r/
 | -------------- | -------- | --------- | :---: | :-------------------: |
 | [`01_Hello_World`](https://yorche3.github.io/programming_languages/core/foundations/01_Hello_World/) | [`helloworld/`](helloworld/) | `print`, ejecución con `Rscript` | — | ❌ Solo stdlib |
 | [`02_Hello_User`](https://yorche3.github.io/programming_languages/core/foundations/02_Hello_User/) | [`hellouser/`](hellouser/) | `cat` + `readLines("stdin")`, `paste0`, `flush` | — | ❌ Solo stdlib |
-| [`03_Unit_Test_Calculator`](https://yorche3.github.io/programming_languages/core/foundations/03_Unit_Test_Calculator/) | [`unit_test/calculator/`](unit_test/calculator/) | testthat, `test_that`, `expect_equal`, `source()` | 5 | ✅ testthat (solo test) |
+| [`03_Unit_Test_Calculator`](https://yorche3.github.io/programming_languages/core/foundations/03_Unit_Test_Calculator/) | [`unit_test/calculator/`](unit_test/calculator/) | testthat, `test_that`, `expect_equal`, layout de paquete (`DESCRIPTION`, `NAMESPACE`) | 5 | ✅ testthat (solo test) |
 | [`04_Numbers`](https://yorche3.github.io/programming_languages/core/foundations/04_Numbers/) | [`numbers/`](numbers/) | Recursión, iteración, acumuladores, TCO, `seq_len` | 10 | ✅ testthat (solo test) |
 
 ---
@@ -62,14 +71,14 @@ r/
 **ES:** Los proyectos en esta sección siguen un patrón progresivo:
 
 1. **Hello World** y **Hello User**: Programas de un solo archivo, ejecutados directamente con `Rscript`. Usan exclusivamente la biblioteca estándar.
-2. **Calculator**: Primer proyecto con framework de pruebas (**testthat**, el estándar de R y de CRAN). Introduce la separación `src/` + `test/` y la carga del módulo con `source()`.
-3. **Numbers**: Expande el patrón a dos suites con punto de entrada `run_tests.R`. R **no garantiza TCO**, por lo que `_acc` se conserva como puente didáctico sin pruebas propias: `_rec` + `_ite` = 10 tests (22 casos).
+2. **Calculator**: Primer proyecto con framework de pruebas (**testthat**, el estándar de R y de CRAN). Introduce el layout de paquete de R (`DESCRIPTION`, `NAMESPACE`, `R/` y `tests/testthat/`) y el punto de entrada `make test`.
+3. **Numbers**: Expande el patrón a dos suites dentro del mismo paquete. R **no garantiza TCO**, por lo que `_acc` se conserva como puente didáctico sin pruebas propias: `_rec` + `_ite` = 10 tests (22 casos).
 
 **EN:** The projects in this section follow a progressive pattern:
 
 1. **Hello World** and **Hello User**: Single-file programs, run directly with `Rscript`. Use only the standard library.
-2. **Calculator**: First project with a test framework (**testthat**, the standard for R and CRAN). Introduces the `src/` + `test/` separation and module loading with `source()`.
-3. **Numbers**: Expands the pattern to two suites with a `run_tests.R` entry point. R **does not guarantee TCO**, so `_acc` is kept as an educational bridge without dedicated tests: `_rec` + `_ite` = 10 tests (22 cases).
+2. **Calculator**: First project with a test framework (**testthat**, the standard for R and CRAN). Introduces the R package layout (`DESCRIPTION`, `NAMESPACE`, `R/` and `tests/testthat/`) and the `make test` entry point.
+3. **Numbers**: Expands the pattern to two suites inside the same package. R **does not guarantee TCO**, so `_acc` is kept as an educational bridge without dedicated tests: `_rec` + `_ite` = 10 tests (22 cases).
 
 ---
 
@@ -93,14 +102,14 @@ Rscript hellouser.r
 
 ```bash
 cd r/core/foundations/unit_test/calculator
-Rscript -e 'testthat::test_file("test/calculator_test.R")'
+make test
 ```
 
 ### Numbers (pruebas)
 
 ```bash
 cd r/core/foundations/numbers
-Rscript test/run_tests.R
+make test
 ```
 
 ---

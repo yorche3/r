@@ -1,0 +1,13 @@
+Package: naiveSort
+Type: Package
+Title: Naive Sort Algorithms
+Version: 0.1.0
+Authors@R: person("Yorche", email = "hyaoki123@gmail.com", role = c("aut", "cre"))
+Description: Specification 05_Naive_Sort: the three elementary O(n^2) sorting
+    algorithms written by hand, without calling sort(), order() or any sorting
+    library and without auxiliary complex structures.
+License: MIT
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3

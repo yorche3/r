@@ -10,33 +10,40 @@ Tres enfoques de implementación para los mismos 5 algoritmos: **recursivo direc
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`src/numbers.R`](src/numbers.R) | Módulo `numbers` — único archivo con las 15 funciones (3 enfoques × 5 algoritmos) + 4 helpers `_help`. |
-| [`test/recursive_tests.R`](test/recursive_tests.R) | Suite recursiva: 5 tests (11 casos). |
-| [`test/iterative_tests.R`](test/iterative_tests.R) | Suite iterativa: 5 tests (11 casos). |
-| [`test/run_tests.R`](test/run_tests.R) | Punto de entrada: ejecuta las dos suites. |
+| [`DESCRIPTION`](DESCRIPTION) | Manifiesto del paquete `numbers`: versión, licencia y dependencia de testthat. |
+| [`NAMESPACE`](NAMESPACE) | Exporta los 15 algoritmos del contrato; los 4 helpers `_help` quedan internos. |
+| [`R/numbers.R`](R/numbers.R) | Módulo `numbers` — único archivo con las 15 funciones (3 enfoques × 5 algoritmos) + 4 helpers `_help`. |
+| [`Makefile`](Makefile) | Punto de entrada: `make test`. |
+| [`tests/testthat/test-recursive.R`](tests/testthat/test-recursive.R) | Suite recursiva: 5 tests (11 casos). |
+| [`tests/testthat/test-iterative.R`](tests/testthat/test-iterative.R) | Suite iterativa: 5 tests (11 casos). |
+| [`tests/testthat.R`](tests/testthat.R) | `test_check("numbers")`, la comprobación que usa `R CMD check`. |
 | [`.gitignore`](.gitignore) | Ignora `.Rhistory`, `.RData` y otros artefactos de R. |
 
 **Estructura de directorios esperada:**
 
 ```text
 numbers/
-├── src/
-│   └── numbers.R             # Único archivo: 3 enfoques en 1
-├── test/
-│   ├── recursive_tests.R     # Tests: enfoque recursivo
-│   ├── iterative_tests.R     # Tests: enfoque iterativo
-│   └── run_tests.R           # Punto de entrada
+├── DESCRIPTION                 # Manifiesto del paquete (numbers)
+├── NAMESPACE                   # Los 15 algoritmos exportados
+├── Makefile                    # Punto de entrada: make test
+├── R/
+│   └── numbers.R               # Único archivo: 3 enfoques en 1
+├── tests/
+│   ├── testthat.R              # test_check() para R CMD check
+│   └── testthat/
+│       ├── test-recursive.R    # Tests: enfoque recursivo
+│       └── test-iterative.R    # Tests: enfoque iterativo
 ├── .gitignore
-└── README.md                 # Este archivo
+└── README.md                   # Este archivo
 ```
 
 ---
 
 ## 🛠️ Enfoque y construcción / Approach & Build
 
-**ES:** Este proyecto usa el mismo patrón que `calculator`: un archivo de funciones cargado con `source()` y suites **testthat**. Las 15 funciones se organizan en 3 grupos por enfoque:
+**ES:** Este proyecto usa el mismo patrón que `calculator`: un paquete de R —`DESCRIPTION`, `NAMESPACE` y `R/`— con **testthat** como framework de pruebas. La suite ya no carga el archivo con `source()`: `make test` llama a `testthat::test_local()`, que carga el paquete con `pkgload::load_all()` sin instalarlo. Las 15 funciones se organizan en 3 grupos por enfoque:
 
-**EN:** This project uses the same pattern as `calculator`: a file of functions loaded with `source()` and **testthat** suites. The 15 functions are organized into 3 groups by approach:
+**EN:** This project uses the same pattern as `calculator`: an R package —`DESCRIPTION`, `NAMESPACE` and `R/`— with **testthat** as the test framework. The suite no longer loads the file with `source()`: `make test` calls `testthat::test_local()`, which loads the package with `pkgload::load_all()` without installing it. The 15 functions are organized into 3 groups by approach:
 
 | Enfoque | Sufijo | Ejemplo | ¿Tiene tests directos? |
 | ------- | ------ | ------- | :---------------------: |
@@ -53,20 +60,20 @@ numbers/
 1. Crear la estructura de directorios:
 
    ```bash
-   mkdir -p r/core/foundations/numbers/{src,test}
+   mkdir -p r/core/foundations/numbers/{R,tests/testthat}
    ```
 
-2. Escribir `src/numbers.R` y las suites en `test/`.
+2. Escribir `DESCRIPTION`, `NAMESPACE`, `R/numbers.R` y las suites en `tests/testthat/`.
 
-3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
+3. No se necesita ningún paso adicional de construcción o vinculación de dependencias: `test_local()` carga el paquete desde el propio directorio.
 
 ---
 
 ## 📄 Archivos de configuración clave / Key Configuration Files
 
-No se requieren archivos de configuración de build. Las suites cargan el módulo con `source("../src/numbers.R")`.
+No hay paso de compilación. La configuración vive en `DESCRIPTION` (nombre `numbers`, dependencia `testthat`) y en `NAMESPACE`, que declara los 15 algoritmos exportados; las suites no necesitan `source()` porque `test_local()` carga el paquete.
 
-### `src/numbers.R` — Implementación (3 enfoques en 1 archivo)
+### `R/numbers.R` — Implementación (3 enfoques en 1 archivo)
 
 **ES:** Cada algoritmo tiene 3 implementaciones con los sufijos `_rec`, `_acc` e `_ite`; los helpers son privados por convención (`_help`). Por ejemplo, `fibonacci`:
 
@@ -127,10 +134,6 @@ fibonacci_ite <- function(n) {
 **EN:** Two suites, one per tested approach. Each suite groups one `test_that` per function (5 per suite); the specification pseudocode's 11 cases live as `expect_equal`s within them (22 in total).
 
 ```r
-library(testthat)
-
-source("../src/numbers.R")
-
 test_that("sum_of_first_n_rec", {
   expect_equal(sum_of_first_n_rec(0), 0)
   expect_equal(sum_of_first_n_rec(3), 6)
@@ -143,18 +146,22 @@ test_that("fibonacci_rec", {
 })
 ```
 
-### `test/run_tests.R` — Punto de entrada
+### `Makefile` — Punto de entrada
 
-**ES:** testthat solo descubre por defecto archivos con prefijo `test*`, así que el punto de entrada ejecuta explícitamente las suites con el nombre `*_tests.R` de la especificación:
+**ES:** El layout de paquete deja que testthat descubra las suites por su cuenta: se llaman `test-recursive.R` y `test-iterative.R`, así que encajan con el patrón por defecto `test*` y ya no hace falta ejecutarlas con `test_file()`. El punto de entrada queda en un único comando, `make test`:
 
-**EN:** testthat only discovers files with the `test*` prefix by default, so the entry point explicitly runs the suites with the specification's `*_tests.R` names:
+**EN:** The package layout lets testthat discover the suites on its own: they are named `test-recursive.R` and `test-iterative.R`, so they match the default `test*` pattern and no longer need to be run with `test_file()`. The entry point becomes a single command, `make test`:
 
-```r
-library(testthat)
+```make
+R ?= Rscript
 
-# Run all test files in the project
-test_file("test/recursive_tests.R")
-test_file("test/iterative_tests.R")
+.PHONY: test clean
+
+test:
+	$(R) -e "testthat::test_local()"
+
+clean:
+	rm -rf *.Rcheck
 ```
 
 ---
@@ -181,23 +188,25 @@ Desde la raíz del proyecto:
 
 ```bash
 cd r/core/foundations/numbers
-Rscript test/run_tests.R
+make test
 ```
 
 **Alternativa (una suite):**
 
 ```bash
-Rscript -e 'testthat::test_file("test/recursive_tests.R")'
+Rscript -e 'testthat::test_local(filter = "recursive")'
 ```
 
 ### Salida esperada / Expected output
 
 ```text
-══ Testing recursive_tests.R ═══════════════════════════════════════════════════
-[ FAIL 0 | WARN 0 | SKIP 0 | PASS 11 ] Done!
+Rscript -e "testthat::test_local()"
+✔ | F W  S  OK | Context
+✔ |         11 | iterative
+✔ |         11 | recursive
 
-══ Testing iterative_tests.R ═══════════════════════════════════════════════════
-[ FAIL 0 | WARN 0 | SKIP 0 | PASS 11 ] Done!
+══ Results ═════════════════════════════════════════════════════════════════════
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 22 ]
 ```
 
 > **ES:** 10 tests en total (5 `test_that` por suite); los 22 casos viven como `expect_equal` dentro de ellos, todos pasando (`FAIL 0`).
@@ -221,16 +230,16 @@ In R, **TCO is not guaranteed**: the interpreter does not optimize tail calls an
 
 ## 📝 Notas de implementación / Implementation Notes
 
-- **ES:** R no tiene importación de módulos para scripts sueltos; `source()` es el mecanismo idiomático para cargar el código fuente en las suites.
-- **EN:** R has no module imports for loose scripts; `source()` is the idiomatic mechanism to load source code into the suites.
+- **ES:** R no tiene importación de módulos para scripts sueltos; el layout de paquete (`DESCRIPTION` + `NAMESPACE` + `R/`) es la forma idiomática de que las suites alcancen el código sin `source()`.
+- **EN:** R has no module imports for loose scripts; the package layout (`DESCRIPTION` + `NAMESPACE` + `R/`) is the idiomatic way for the suites to reach the code without `source()`.
 - **ES:** Los bucles iterativos usan `seq_len(n)` en lugar de `1:n` porque en R `1:0` vale `c(1, 0)` (¡no es vacío!), lo que rompería `sum_of_first_n_ite(0)` y `factorial_ite(0)`.
 - **EN:** Iterative loops use `seq_len(n)` instead of `1:n` because in R `1:0` evaluates to `c(1, 0)` (not empty!), which would break `sum_of_first_n_ite(0)` and `factorial_ite(0)`.
 - **ES:** El MCM usa `(a / gcd(a, b)) * b`; la división devuelve `double` y testthat lo compara con tolerancia, por lo que los casos del pseudocódigo pasan sin cambios.
 - **EN:** LCM uses `(a / gcd(a, b)) * b`; division returns a `double` and testthat compares with tolerance, so the pseudocode cases pass unchanged.
 - **ES:** En `greatest_common_divisor` se usa `%%` (operador módulo de R), legítimo en este algoritmo (la restricción de no usar operadores de módulo aplica solo al módulo `calculator` de la especificación 03).
 - **EN:** `greatest_common_divisor` uses `%%` (R's modulus operator), which is legitimate in this algorithm (the no-modulus-operator restriction applies only to the `calculator` module of specification 03).
-- **ES:** `run_tests.R` existe porque testthat no descubre archivos `*_tests.R` con su patrón por defecto (`test*`); el punto de entrada los ejecuta con `test_file`.
-- **EN:** `run_tests.R` exists because testthat does not discover `*_tests.R` files with its default (`test*`) pattern; the entry point runs them with `test_file`.
+- **ES:** Los cuatro helpers `_help` de la recursión con acumulador **no** se exportan en `NAMESPACE`: en R lo idiomático es que el helper de un algoritmo sea interno. Las suites los alcanzarían igual, porque `test_local()` carga el paquete con `export_all = TRUE`.
+- **EN:** The four `_help` helpers of accumulator recursion are **not** exported in `NAMESPACE`: in R the idiomatic choice is to keep an algorithm's helper internal. The suites would reach them anyway, because `test_local()` loads the package with `export_all = TRUE`.
 
 ---
 

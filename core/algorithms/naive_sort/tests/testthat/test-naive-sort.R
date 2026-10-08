@@ -1,7 +1,3 @@
-library(testthat)
-
-source("../src/naive_sort.R")
-
 # Casos de prueba de la especificación 05_Naive_Sort.md
 #
 # Caso nulo incluido: en R `NULL` es representable y `is.null()` lo distingue de

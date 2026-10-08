@@ -28,15 +28,15 @@ Rscript hellouser.r
 
 # Calculator Tests
 cd core/foundations/unit_test/calculator
-Rscript -e 'testthat::test_file("test/calculator_test.R")'
+make test
 
 # Numbers Tests
 cd core/foundations/numbers
-Rscript test/run_tests.R
+make test
 
 # Naive Sort Tests
 cd core/algorithms/naive_sort
-Rscript test/run_tests.R
+make test
 ```
 
 ---
@@ -75,24 +75,30 @@ Rscript <File>.r
 ### 2. Proyecto con pruebas unitarias (testthat)
 
 **ES:** Para proyectos que requieren pruebas unitarias, se usa **testthat** como
-framework de test. El código fuente se organiza en `src/` y las pruebas en `test/`.
-R no tiene importación de módulos para scripts sueltos: las suites cargan el
-código con `source()` y se ejecutan con `test_file`.
+framework de test y el módulo se estructura como **paquete de R**: `DESCRIPTION`
+(nombre, versión, licencia y dependencias), `NAMESPACE` (lo que se exporta), el
+código en `R/` y las suites en `tests/testthat/`, con el prefijo `test-` que
+testthat descubre por defecto. No hace falta instalar el paquete: `test_local()`
+lo carga con `pkgload::load_all()`.
 
 **EN:** For projects that require unit tests, **testthat** is used as the test
-framework. Source code goes in `src/` and tests in `test/`. R has no module
-imports for loose scripts: suites load the code with `source()` and run it with
-`test_file`.
+framework and the module is laid out as an **R package**: `DESCRIPTION` (name,
+version, license and dependencies), `NAMESPACE` (what is exported), the code in
+`R/` and the suites in `tests/testthat/`, with the `test-` prefix testthat
+discovers by default. There is no need to install the package: `test_local()`
+loads it with `pkgload::load_all()`.
 
 ```bash
-Rscript -e 'testthat::test_file("test/<suite>.R")'   # una suite
-Rscript test/run_tests.R                              # punto de entrada (todas)
+make test                                             # todas las suites
+Rscript -e 'testthat::test_local(filter = "<suite>")' # una sola suite
 ```
 
-> **ES:** testthat solo descubre por defecto archivos con prefijo `test*`; para
-> suites con otros nombres se usa `test_file` o un `run_tests.R` propio.
-> **EN:** testthat only discovers files with the `test*` prefix by default; for
-> suites with other names, use `test_file` or a custom `run_tests.R`.
+> **ES:** El punto de entrada es un `Makefile` con el objetivo `test`: el módulo
+> se ejecuta con un único comando, `make test`, y testthat descubre las suites
+> por sí solo.
+> **EN:** The entry point is a `Makefile` with the `test` target: the module runs
+> with a single command, `make test`, and testthat discovers the suites on its
+> own.
 
 ---
 

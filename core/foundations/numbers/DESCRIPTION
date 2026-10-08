@@ -1,0 +1,14 @@
+Package: numbers
+Type: Package
+Title: Numbers Algorithms in Three Approaches
+Version: 0.1.0
+Authors@R: person("Yorche", email = "hyaoki123@gmail.com", role = c("aut", "cre"))
+Description: Specification 04_Numbers: the five numeric algorithms (sum of the
+    first n numbers, factorial, fibonacci, greatest common divisor and least
+    common multiple) in three approaches each: direct recursion, accumulator
+    recursion and iteration.
+License: MIT
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3

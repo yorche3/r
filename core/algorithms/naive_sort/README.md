@@ -10,31 +10,38 @@ Tres algoritmos de ordenación con coste $O(n^2)$: **selection sort**, **bubble 
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`src/naive_sort.R`](src/naive_sort.R) | Módulo `naive_sort` — las 3 funciones del contrato. |
-| [`test/naive_sort_tests.R`](test/naive_sort_tests.R) | Suite única: 3 tests (8 casos cada uno). |
-| [`test/run_tests.R`](test/run_tests.R) | Punto de entrada: ejecuta la suite. |
+| [`DESCRIPTION`](DESCRIPTION) | Manifiesto del paquete `naiveSort`: versión, licencia y dependencia de testthat. |
+| [`NAMESPACE`](NAMESPACE) | Exporta las 3 funciones del contrato. |
+| [`R/naive_sort.R`](R/naive_sort.R) | Módulo `naive_sort` — las 3 funciones del contrato. |
+| [`Makefile`](Makefile) | Punto de entrada: `make test`. |
+| [`tests/testthat/test-naive-sort.R`](tests/testthat/test-naive-sort.R) | Suite única: 3 tests (8 casos cada uno). |
+| [`tests/testthat.R`](tests/testthat.R) | `test_check("naiveSort")`, la comprobación que usa `R CMD check`. |
 | [`.gitignore`](.gitignore) | Ignora `.Rhistory`, `.RData`, `.Rproj.user`, `.Renviron`, `*.tar.gz`, `*.Rcheck/`. |
 
 **Estructura de directorios esperada:**
 
 ```text
 naive_sort/
-├── src/
-│   └── naive_sort.R          # 3 funciones del contrato
-├── test/
-│   ├── naive_sort_tests.R    # Tests: los 3 algoritmos
-│   └── run_tests.R           # Punto de entrada
+├── DESCRIPTION                 # Manifiesto del paquete (naiveSort)
+├── NAMESPACE                   # Las 3 funciones exportadas
+├── Makefile                    # Punto de entrada: make test
+├── R/
+│   └── naive_sort.R            # 3 funciones del contrato
+├── tests/
+│   ├── testthat.R              # test_check() para R CMD check
+│   └── testthat/
+│       └── test-naive-sort.R   # Tests: los 3 algoritmos
 ├── .gitignore
-└── README.md                 # Este archivo
+└── README.md                   # Este archivo
 ```
 
 ---
 
 ## 🛠️ Enfoque y construcción / Approach & Build
 
-**ES:** Este proyecto usa el mismo patrón que [`numbers`](../../foundations/numbers/) y [`calculator`](../../foundations/unit_test/calculator/): un archivo de funciones cargado con `source()` y suites **testthat**. Las 3 funciones son autónomas: no hay helpers compartidos ni estructuras auxiliares más allá de los índices y la variable `key`.
+**ES:** Este proyecto usa el mismo patrón que [`numbers`](../../foundations/numbers/) y [`calculator`](../../foundations/unit_test/calculator/): un paquete de R —`DESCRIPTION`, `NAMESPACE` y `R/`— con **testthat** como framework de pruebas. La suite ya no carga el archivo con `source()`: `make test` llama a `testthat::test_local()`, que carga el paquete con `pkgload::load_all()` sin instalarlo. Las 3 funciones son autónomas: no hay helpers compartidos ni estructuras auxiliares más allá de los índices y la variable `key`.
 
-**EN:** This project uses the same pattern as [`numbers`](../../foundations/numbers/) and [`calculator`](../../foundations/unit_test/calculator/): a file of functions loaded with `source()` and **testthat** suites. The 3 functions are self-contained: there are no shared helpers and no auxiliary structures beyond the indices and the `key` variable.
+**EN:** This project uses the same pattern as [`numbers`](../../foundations/numbers/) and [`calculator`](../../foundations/unit_test/calculator/): an R package —`DESCRIPTION`, `NAMESPACE` and `R/`— with **testthat** as the test framework. The suite no longer loads the file with `source()`: `make test` calls `testthat::test_local()`, which loads the package with `pkgload::load_all()` without installing it. The 3 functions are self-contained: there are no shared helpers and no auxiliary structures beyond the indices and the `key` variable.
 
 **Combinación aplicada:** implementación iterativa + vectores mutables localmente → **1 suite × 3 tests = 3 tests (24 casos)**.
 
@@ -45,22 +52,22 @@ naive_sort/
 1. Crear la estructura de directorios:
 
    ```bash
-   mkdir -p r/core/algorithms/naive_sort/{src,test}
+   mkdir -p r/core/algorithms/naive_sort/{R,tests/testthat}
    ```
 
-2. Escribir `src/naive_sort.R` y la suite en `test/`.
+2. Escribir `DESCRIPTION`, `NAMESPACE`, `R/naive_sort.R` y la suite en `tests/testthat/`.
 
-3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
+3. No se necesita ningún paso adicional de construcción o vinculación de dependencias: `test_local()` carga el paquete desde el propio directorio.
 
 ---
 
 ## 📄 Archivos de configuración clave / Key Configuration Files
 
-**ES:** No se requieren archivos de configuración de build. La suite carga el módulo con `source("../src/naive_sort.R")`.
+**ES:** No hay paso de compilación. La configuración vive en `DESCRIPTION` (nombre `naiveSort`, dependencia `testthat`) y en `NAMESPACE`, que declara las 3 funciones exportadas; la suite no necesita `source()` porque `test_local()` carga el paquete.
 
-**EN:** No build configuration files are required. The suite loads the module with `source("../src/naive_sort.R")`.
+**EN:** There is no compilation step. Configuration lives in `DESCRIPTION` (name `naiveSort`, `testthat` dependency) and in `NAMESPACE`, which declares the 3 exported functions; the suite needs no `source()` because `test_local()` loads the package.
 
-### `src/naive_sort.R` — Implementación
+### `R/naive_sort.R` — Implementación
 
 **ES:** Las tres funciones reciben un vector, comprueban el caso nulo con `is.null()`, resuelven `n < 2` y ordenan con bucles indexados. Extracto de `bubble_sort`, que conserva la bandera `swapped` y la salida temprana del pseudocódigo:
 
@@ -112,17 +119,22 @@ assert_sorts_all_cases <- function(sort_function, algorithm) {
 }
 ```
 
-### `test/run_tests.R` — Punto de entrada
+### `Makefile` — Punto de entrada
 
-**ES:** testthat solo descubre por defecto archivos con prefijo `test*`, así que el punto de entrada ejecuta explícitamente la suite con el nombre `*_tests.R` de la especificación:
+**ES:** El layout de paquete deja que testthat descubra la suite por su cuenta: el archivo se llama `test-naive-sort.R`, así que encaja con el patrón por defecto `test*` y ya no hace falta ejecutarlo con `test_file()`. El punto de entrada queda en un único comando, `make test`:
 
-**EN:** testthat only discovers files with the `test*` prefix by default, so the entry point explicitly runs the suite with the specification's `*_tests.R` name:
+**EN:** The package layout lets testthat discover the suite on its own: the file is named `test-naive-sort.R`, so it matches the default `test*` pattern and no longer needs to be run with `test_file()`. The entry point becomes a single command, `make test`:
 
-```r
-library(testthat)
+```make
+R ?= Rscript
 
-# Run all test files in the project
-test_file("test/naive_sort_tests.R")
+.PHONY: test clean
+
+test:
+	$(R) -e "testthat::test_local()"
+
+clean:
+	rm -rf *.Rcheck
 ```
 
 ---
@@ -151,8 +163,8 @@ sudo apt install r-cran-testthat
 
 ```bash
 cd r/core/algorithms/naive_sort
-Rscript -e 'invisible(parse("src/naive_sort.R")); cat("parse OK\n")'
-Rscript -e 'print(lintr::lint("src/naive_sort.R"))'
+Rscript -e 'invisible(parse("R/naive_sort.R")); cat("parse OK\n")'
+Rscript -e 'print(lintr::lint("R/naive_sort.R"))'
 ```
 
 ```text
@@ -165,21 +177,24 @@ Desde la raíz del proyecto:
 
 ```bash
 cd r/core/algorithms/naive_sort
-Rscript test/run_tests.R
+make test
 ```
 
-**Alternativa (la suite directamente):**
+**Alternativa (solo una suite):**
 
 ```bash
-Rscript -e 'testthat::test_file("test/naive_sort_tests.R")'
+Rscript -e 'testthat::test_local(filter = "naive-sort")'
 ```
 
 ### Salida esperada / Expected output
 
 ```text
-══ Testing naive_sort_tests.R ══════════════════════════════════════════════════
-…
-[ FAIL 0 | WARN 0 | SKIP 0 | PASS 24 ] Done!
+Rscript -e "testthat::test_local()"
+✔ | F W  S  OK | Context
+✔ |         24 | naive-sort
+
+══ Results ═════════════════════════════════════════════════════════════════════
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 24 ]
 ```
 
 > **ES:** 3 tests (`test_that`, uno por algoritmo); los 24 casos viven como `expect_equal` dentro de ellos (8 por algoritmo), todos pasando (`FAIL 0`).
@@ -252,17 +267,17 @@ Rscript -e 'testthat::test_file("test/naive_sort_tests.R")'
 
 ### 🏷️ Naming y ausencia de `main` / Naming and missing `main`
 
-**ES:** Las funciones usan `snake_case` (`selection_sort`), que coincide con el nombre de la especificación, y el parámetro conserva el nombre `arr` de la documentación. No hay `main`: el punto de entrada es `test/run_tests.R`, que ejecuta la suite.
+**ES:** Las funciones usan `snake_case` (`selection_sort`), que coincide con el nombre de la especificación, y el parámetro conserva el nombre `arr` de la documentación. No hay `main`: el punto de entrada es el `Makefile` (`make test`), que ejecuta la suite.
 
-**EN:** Functions use `snake_case` (`selection_sort`), matching the specification's name, and the parameter keeps the documentation's `arr` name. There is no `main`: the entry point is `test/run_tests.R`, which runs the suite.
+**EN:** Functions use `snake_case` (`selection_sort`), matching the specification's name, and the parameter keeps the documentation's `arr` name. There is no `main`: the entry point is the `Makefile` (`make test`), which runs the suite.
 
 ### 📍 Desviaciones respecto a la ubicación esperada / Deviations from the expected location
 
 | Especificación | Implementación | Motivo |
 |----------------|----------------|--------|
-| `src/naive_sort.ext` | `src/naive_sort.R` | Nombre exacto del módulo; solo cambia la extensión (`.R`, como `numbers.R`). |
-| `test/naive_sort_test.ext` | `test/naive_sort_tests.R` | El sufijo va en plural (`_tests.R`), como `recursive_tests.R` e `iterative_tests.R` en `numbers/`. |
-| `test/run_tests.ext` | `test/run_tests.R` | testthat no descubre archivos `*_tests.R` con su patrón por defecto (`test*`), así que el punto de entrada los ejecuta con `test_file`. |
+| `src/naive_sort.ext` | `R/naive_sort.R` | El código del contrato vive en `R/`, el directorio que el layout de paquete de R reserva para el código fuente. |
+| `test/naive_sort_test.ext` | `tests/testthat/test-naive-sort.R` | Ubicación y prefijo `test-` del layout de paquete; testthat descubre el archivo con su patrón por defecto. |
+| `test/run_tests.ext` | `Makefile` (`make test`) | testthat descubre y ejecuta la suite por sí solo, así que el punto de entrada es un único comando sobre `test_local()`. |
 
 **ES:** Este proyecto también está implementado en otros lenguajes. Explora el repositorio principal para consultar las demás versiones.
 

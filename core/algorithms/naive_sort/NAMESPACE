@@ -1,0 +1,4 @@
+# NAMESPACE escrito a mano: en esta fase no se usa roxygen2.
+export(selection_sort)
+export(bubble_sort)
+export(insertion_sort)

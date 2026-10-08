@@ -1,0 +1,31 @@
+# NAMESPACE escrito a mano: en esta fase no se usa roxygen2.
+import(methods)
+
+export(node_init)
+export(node_get_value)
+export(node_get_next)
+export(node_set_next)
+
+export(linked_list_init)
+export(linked_list_get_head)
+export(linked_list_insert_head)
+export(linked_list_insert_tail)
+export(linked_list_delete)
+export(linked_list_is_empty)
+export(linked_list_size)
+
+export(stack_init)
+export(stack_push)
+export(stack_pop)
+export(stack_peek)
+export(stack_is_empty)
+export(stack_size)
+
+export(queue_init)
+export(queue_enqueue)
+export(queue_dequeue)
+export(queue_peek)
+export(queue_is_empty)
+export(queue_size)
+
+exportClasses(Node, LinkedList, Stack, Queue)
