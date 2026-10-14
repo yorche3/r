@@ -8,13 +8,13 @@ Implementación de la especificación [01_Hello_World](https://yorche3.github.io
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`helloworld.r`](helloworld.r) | Código fuente: imprime `"Hello, World from R!"` en la salida estándar. |
+| [`hello_world.r`](hello_world.r) | Código fuente: imprime `"Hello, World from R!"` en la salida estándar. |
 
 **Estructura de directorios esperada:**
 
 ```text
 helloworld/
-├── helloworld.r    # Código fuente
+├── hello_world.r    # Código fuente
 └── README.md       # Este archivo
 ```
 
@@ -34,7 +34,7 @@ helloworld/
    mkdir -p r/core/foundations/helloworld
    ```
 
-2. Escribir el archivo `helloworld.r` con el código fuente.
+2. Escribir el archivo `hello_world.r` con el código fuente.
 
 3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
 
@@ -71,11 +71,11 @@ R --version
 
 ```bash
 cd r/core/foundations/helloworld
-Rscript helloworld.r
+Rscript hello_world.r
 ```
 
-> **ES:** Alternativamente se puede ejecutar desde una sesión interactiva de R con `source("helloworld.r")`.
-> **EN:** Alternatively, it can be run from an interactive R session with `source("helloworld.r")`.
+> **ES:** Alternativamente se puede ejecutar desde una sesión interactiva de R con `source("hello_world.r")`.
+> **EN:** Alternatively, it can be run from an interactive R session with `source("hello_world.r")`.
 
 ### Salida esperada / Expected output
 
