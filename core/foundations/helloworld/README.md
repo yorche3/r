@@ -45,16 +45,16 @@ helloworld/
 No se requieren archivos de configuración de build. El programa se ejecuta directamente con el intérprete `Rscript`.
 
 ```r
-print("Hello, World from R!")
+cat("Hello, World! from R!\n")
 ```
 
 | Elemento | Propósito |
 |----------|-----------|
-| `print(...)` | Función genérica que imprime su argumento en la salida estándar, seguido de un salto de línea (`\n`). |
-| `"Hello, World from R!"` | Argumento: la cadena a imprimir. |
+| `cat(...)` | Concatena y escribe sus argumentos en la salida estándar **sin** añadir nada: la cadena sale tal cual. |
+| `"Hello, World! from R!\n"` | Argumento: la cadena a imprimir, con el salto de línea explícito. |
 
-> **ES:** `print` es una función genérica que, para un vector de caracteres, escribe su representación textual (incluidas las comillas) y un salto de línea.
-> **EN:** `print` is a generic function that, for a character vector, writes its textual representation (including the quotes) and a newline.
+> **ES:** `cat` escribe la cadena tal cual, sin comillas ni prefijos; `print` habría añadido `[1] ` y comillas por ser la representación de un vector, y por eso no se usa aquí.
+> **EN:** `cat` writes the string as is, without quotes or prefixes; `print` would have added `[1] ` and quotes because it renders a vector, so it is not used here.
 
 ---
 
@@ -80,7 +80,7 @@ Rscript hello_world.r
 ### Salida esperada / Expected output
 
 ```text
-[1] "Hello, World from R!"
+Hello, World! from R!
 ```
 
 ---
@@ -89,8 +89,8 @@ Rscript hello_world.r
 
 - **ES:** R no requiere una función `main`: el script se ejecuta de arriba a abajo como en lenguajes de scripting.
 - **EN:** R does not require a `main` function: the script executes top to bottom like in scripting languages.
-- **ES:** `print` escribe en `stdout` y añade automáticamente un salto de línea.
-- **EN:** `print` writes to `stdout` and automatically appends a newline.
+- **ES:** `cat` escribe en `stdout` y **no** añade salto de línea: se incluye `\n` en la cadena para que la salida termine en línea nueva.
+- **EN:** `cat` writes to `stdout` and does **not** append a newline: `\n` is included in the string so the output ends with a newline.
 - **ES:** `Rscript` es la herramienta de ejecución por lotes de R, pensada para scripts no interactivos.
 - **EN:** `Rscript` is R's batch execution tool, intended for non-interactive scripts.
 

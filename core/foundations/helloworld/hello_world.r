@@ -1,1 +1,1 @@
-print("Hello, World! from R!")
+cat("Hello, World! from R!\n")
