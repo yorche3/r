@@ -10,13 +10,13 @@ Solicita un nombre al usuario por la entrada estándar (estilo prompt) y saluda.
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`hellouser.r`](hellouser.r) | Código fuente: solicita un nombre por la entrada estándar y saluda. |
+| [`hello_user.r`](hello_user.r) | Código fuente: solicita un nombre por la entrada estándar y saluda. |
 
 **Estructura de directorios esperada:**
 
 ```text
 hellouser/
-├── hellouser.r     # Código fuente
+├── hello_user.r     # Código fuente
 └── README.md       # Este archivo
 ```
 
@@ -44,7 +44,7 @@ hellouser/
    mkdir -p r/core/foundations/hellouser
    ```
 
-2. Escribir el archivo `hellouser.r` con el código fuente.
+2. Escribir el archivo `hello_user.r` con el código fuente.
 
 3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
 
@@ -103,7 +103,7 @@ R --version
 
 ```bash
 cd r/core/foundations/hellouser
-Rscript hellouser.r
+Rscript hello_user.r
 ```
 
 **ES:** El programa muestra el prompt y espera a que escribas tu nombre y presiones Enter.
@@ -116,8 +116,8 @@ Enter your name: Ada
 [1] "Hello, Ada!"
 ```
 
-> **ES:** También admite entrada redirigida: `printf 'Ada\n' | Rscript hellouser.r` produce el mismo saludo.
-> **EN:** It also accepts redirected input: `printf 'Ada\n' | Rscript hellouser.r` produces the same greeting.
+> **ES:** También admite entrada redirigida: `printf 'Ada\n' | Rscript hello_user.r` produce el mismo saludo.
+> **EN:** It also accepts redirected input: `printf 'Ada\n' | Rscript hello_user.r` produces the same greeting.
 
 ---
 
