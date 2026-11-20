@@ -1,0 +1,14 @@
+Package: dataStructuresAdvanced
+Type: Package
+Title: Data Structures Advanced over Multi-Link Nodes
+Version: 0.1.0
+Authors@R: person("Yorche", email = "hyaoki123@gmail.com", role = c("aut", "cre"))
+Description: Specification 07_Data_Structures_Advanced: a Node base with
+    TreeNode and GraphNode derivatives, BinarySearchTree and directed Graph
+    implementations.
+License: MIT
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Imports: methods
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3
