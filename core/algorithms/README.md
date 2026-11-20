@@ -12,6 +12,7 @@ Los módulos de esta fase trabajan sobre **vectores atómicos** (el «array» de
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `make test` + testthat | 3 | ✅ |
 | [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `make test` + testthat | 5 | ✅ |
+| [`data_structures_advanced/`](data_structures_advanced/) | [07_Data_Structures_Advanced](https://yorche3.github.io/programming_languages/core/algorithms/07_Data_Structures_Advanced/) | `make test` + testthat | 23 | ✅ |
 
 ---
 
@@ -31,19 +32,32 @@ algorithms/
 │   │       └── test-naive-sort.R    # 3 tests × 8 casos
 │   ├── .gitignore                   # Ignora artefactos de R
 │   └── README.md
-└── data_structures_basics/          # 06_Data_Structures_Basics
-    ├── DESCRIPTION                  # Manifiesto del paquete (dataStructuresBasics)
-    ├── NAMESPACE                    # Clases S4 y 22 funciones exportadas
+├── data_structures_basics/          # 06_Data_Structures_Basics
+│   ├── DESCRIPTION                  # Manifiesto del paquete (dataStructuresBasics)
+│   ├── NAMESPACE                    # Clases S4 y 22 funciones exportadas
+│   ├── Makefile                     # Punto de entrada: make test
+│   ├── R/
+│   │   └── data_structures_basics.R # Clases S4, helpers y operaciones del contrato
+│   ├── tests/
+│   │   └── testthat/
+│   │       ├── helper-contract.R    # Helper expect_contract
+│   │       ├── test-node.R          # 2 tests para Node
+│   │       ├── test-linked-list.R   # 1 test para LinkedList
+│   │       ├── test-stack.R         # 1 test para Stack
+│   │       └── test-queue.R         # 1 test para Queue
+│   ├── .gitignore                   # Ignora artefactos de R
+│   └── README.md
+└── data_structures_advanced/        # 07_Data_Structures_Advanced
+    ├── DESCRIPTION                  # Manifiesto del paquete (dataStructuresAdvanced)
+    ├── NAMESPACE                    # Clases y funciones exportadas
     ├── Makefile                     # Punto de entrada: make test
     ├── R/
-    │   └── data_structures_basics.R # Clases S4, helpers y operaciones del contrato
+    │   └── data_structures_advanced.R # Clases de referencia y operaciones del contrato
     ├── tests/
+    │   ├── testthat.R               # test_check() para R CMD check
     │   └── testthat/
     │       ├── helper-contract.R    # Helper expect_contract
-    │       ├── test-node.R          # 2 tests para Node
-    │       ├── test-linked-list.R   # 1 test para LinkedList
-    │       ├── test-stack.R         # 1 test para Stack
-    │       └── test-queue.R         # 1 test para Queue
+    │       └── test-data-structures-advanced.R # 23 tests (156 aserciones)
     ├── .gitignore                   # Ignora artefactos de R
     └── README.md
 ```
@@ -82,6 +96,10 @@ make test
 
 # Data Structures Basics Tests
 cd ../data_structures_basics
+make test
+
+# Data Structures Advanced Tests
+cd ../data_structures_advanced
 make test
 ```
 
