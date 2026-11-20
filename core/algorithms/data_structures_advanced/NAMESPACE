@@ -1,0 +1,27 @@
+# NAMESPACE escrito a mano: en esta fase no se usa roxygen2.
+import(methods)
+
+export(node_get_value)
+
+export(tree_node_init)
+export(tree_node_get_left)
+export(tree_node_get_right)
+export(tree_node_set_left)
+export(tree_node_set_right)
+
+export(binary_tree_init)
+export(binary_tree_insert)
+export(binary_tree_contains)
+export(binary_tree_is_empty)
+export(binary_tree_size)
+
+export(graph_init)
+export(graph_add_vertex)
+export(graph_add_edge)
+export(graph_has_edge)
+export(graph_get_neighbors)
+export(graph_is_empty)
+export(graph_vertex_count)
+export(graph_edge_count)
+
+exportClasses(Node, TreeNode, BinaryTree, Graph)
